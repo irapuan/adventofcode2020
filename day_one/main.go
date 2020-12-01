@@ -224,6 +224,6 @@ func main() {
 1507`
 
 	first, second := calc(input)
-	fmt.Println("The two number are: %d , %d", first, second)
-	fmt.Println("The final result is: %d", (first * second))
+	fmt.Printf("The two number are: %d , %d \n", first, second)
+	fmt.Printf("The final result is: %d \n", (first * second))
 }
