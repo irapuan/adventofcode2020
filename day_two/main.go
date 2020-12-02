@@ -32,7 +32,29 @@ func SledRentalPasswordCheck(input string) bool {
 }
 
 func TobogganPasswordCheck(input string) bool {
-	return true
+	rgx := regexp.MustCompile(`(?P<minimum>\d+)-(?P<maximum>\d+) (?P<letter>\w{1}): (?P<password>\w+)`)
+
+	policy := rgx.FindStringSubmatch(input)
+
+	if len(policy) != 5 {
+		return false
+	}
+
+	policyMinimum, _ := strconv.Atoi(policy[1])
+	policyMaximum, _ := strconv.Atoi(policy[2])
+	policyLetter := policy[3]
+	password := policy[4]
+
+	firstCharacterMatches := string(password[policyMinimum-1]) == policyLetter
+	secondPositionMarches := string(password[policyMaximum-1]) == policyLetter
+
+	if firstCharacterMatches && !secondPositionMarches {
+		return true
+	} else if !firstCharacterMatches && secondPositionMarches {
+		return true
+	}
+
+	return false
 }
 
 func main() {

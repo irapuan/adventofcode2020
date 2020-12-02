@@ -108,4 +108,26 @@ func TestPasswordPolicyByPosition(t *testing.T) {
 
 	})
 
+	t.Run("Zero occurencies of the right character should return false", func(t *testing.T) {
+		input := "1-3 a: eeeee"
+
+		got := TobogganPasswordCheck(input)
+
+		if got == true {
+			t.Error("Policy didn't work")
+		}
+
+	})
+
+	t.Run("wrong format should return false", func(t *testing.T) {
+		input := "wrong format"
+
+		got := TobogganPasswordCheck(input)
+
+		if got == true {
+			t.Error("Policy didn't work")
+		}
+
+	})
+
 }
