@@ -7,13 +7,20 @@ import (
 	"strings"
 )
 
-func SledRentalPasswordCheck(input string) bool {
+type Policy struct {
+	PolicyMinimum int
+	PolicyMaximum int
+	PolicyLetter  string
+	Password      string
+}
+
+func extrectPolicy(input string) (Policy, bool) {
 	rgx := regexp.MustCompile(`(?P<minimum>\d+)-(?P<maximum>\d+) (?P<letter>\w{1}): (?P<password>\w+)`)
 
 	policy := rgx.FindStringSubmatch(input)
 
 	if len(policy) != 5 {
-		return false
+		return Policy{}, false
 	}
 
 	policyMinimum, _ := strconv.Atoi(policy[1])
@@ -21,9 +28,25 @@ func SledRentalPasswordCheck(input string) bool {
 	policyLetter := policy[3]
 	password := policy[4]
 
-	lettersInPassword := strings.Count(password, policyLetter)
+	return Policy{
+		PolicyMinimum: policyMinimum,
+		PolicyMaximum: policyMaximum,
+		Password:      password,
+		PolicyLetter:  policyLetter,
+	}, true
+}
 
-	if lettersInPassword >= policyMinimum && lettersInPassword <= policyMaximum {
+func SledRentalPasswordCheck(input string) bool {
+
+	policy, continueTheProcess := extrectPolicy(input)
+
+	if !continueTheProcess {
+		return false
+	}
+
+	lettersInPassword := strings.Count(policy.Password, policy.PolicyLetter)
+
+	if lettersInPassword >= policy.PolicyMinimum && lettersInPassword <= policy.PolicyMaximum {
 		return true
 	}
 
@@ -32,21 +55,14 @@ func SledRentalPasswordCheck(input string) bool {
 }
 
 func TobogganPasswordCheck(input string) bool {
-	rgx := regexp.MustCompile(`(?P<minimum>\d+)-(?P<maximum>\d+) (?P<letter>\w{1}): (?P<password>\w+)`)
+	policy, continueTheProcess := extrectPolicy(input)
 
-	policy := rgx.FindStringSubmatch(input)
-
-	if len(policy) != 5 {
+	if !continueTheProcess {
 		return false
 	}
 
-	policyMinimum, _ := strconv.Atoi(policy[1])
-	policyMaximum, _ := strconv.Atoi(policy[2])
-	policyLetter := policy[3]
-	password := policy[4]
-
-	firstCharacterMatches := string(password[policyMinimum-1]) == policyLetter
-	secondPositionMarches := string(password[policyMaximum-1]) == policyLetter
+	firstCharacterMatches := string(policy.Password[policy.PolicyMinimum-1]) == policy.PolicyLetter
+	secondPositionMarches := string(policy.Password[policy.PolicyMaximum-1]) == policy.PolicyLetter
 
 	if firstCharacterMatches && !secondPositionMarches {
 		return true
