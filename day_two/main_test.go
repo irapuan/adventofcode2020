@@ -11,10 +11,10 @@ type TestItem struct {
 
 func TestPasswordPolicy(t *testing.T) {
 
-	t.Run("Passwor inside the range should succedd", func(t *testing.T) {
+	t.Run("Password inside the range should succedd", func(t *testing.T) {
 		input := "1-3 a: abcde"
 
-		got := PasswordCheck(input)
+		got := SledRentalPasswordCheck(input)
 
 		if got == false {
 			t.Error("Policy didn't work")
@@ -25,7 +25,7 @@ func TestPasswordPolicy(t *testing.T) {
 	t.Run("Bellow the minimum number of letters should fail", func(t *testing.T) {
 		input := "1-3 a: bcde"
 
-		got := PasswordCheck(input)
+		got := SledRentalPasswordCheck(input)
 
 		if got == true {
 			t.Error("Policy didn't work")
@@ -36,7 +36,7 @@ func TestPasswordPolicy(t *testing.T) {
 	t.Run("Password surpassing the number of letters should fail", func(t *testing.T) {
 		input := "2-6 e: eeeeeeee"
 
-		got := PasswordCheck(input)
+		got := SledRentalPasswordCheck(input)
 
 		if got == true {
 			t.Error("Policy didn't work")
@@ -47,7 +47,7 @@ func TestPasswordPolicy(t *testing.T) {
 	t.Run("Wrong format should fail", func(t *testing.T) {
 		input := "444444444"
 
-		got := PasswordCheck(input)
+		got := SledRentalPasswordCheck(input)
 
 		if got == true {
 			t.Error("Policy didn't work")
@@ -58,7 +58,7 @@ func TestPasswordPolicy(t *testing.T) {
 	t.Run("Empty string should fail", func(t *testing.T) {
 		input := ""
 
-		got := PasswordCheck(input)
+		got := SledRentalPasswordCheck(input)
 
 		if got == true {
 			t.Error("Policy didn't work")
@@ -75,11 +75,37 @@ func TestPasswordPolicy(t *testing.T) {
 		}
 
 		for _, item := range multipleItems {
-			got := PasswordCheck(item.valueForTest)
+			got := SledRentalPasswordCheck(item.valueForTest)
 			if got != item.expectedResult {
 				t.Errorf("for the policy %s was expected %t but got %t", item.valueForTest, item.expectedResult, got)
 			}
 		}
 
 	})
+}
+
+func TestPasswordPolicyByPosition(t *testing.T) {
+
+	t.Run("One occurence of the right character on the right position should return true", func(t *testing.T) {
+		input := "1-3 a: abcde"
+
+		got := TobogganPasswordCheck(input)
+
+		if got == false {
+			t.Error("Policy didn't work")
+		}
+
+	})
+
+	t.Run("Two occurencies of the right character should return false", func(t *testing.T) {
+		input := "1-3 a: abade"
+
+		got := TobogganPasswordCheck(input)
+
+		if got == true {
+			t.Error("Policy didn't work")
+		}
+
+	})
+
 }

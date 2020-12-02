@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func PasswordCheck(input string) bool {
+func SledRentalPasswordCheck(input string) bool {
 	rgx := regexp.MustCompile(`(?P<minimum>\d+)-(?P<maximum>\d+) (?P<letter>\w{1}): (?P<password>\w+)`)
 
 	policy := rgx.FindStringSubmatch(input)
@@ -29,6 +29,10 @@ func PasswordCheck(input string) bool {
 
 	return false
 
+}
+
+func TobogganPasswordCheck(input string) bool {
+	return true
 }
 
 func main() {
@@ -1037,7 +1041,7 @@ func main() {
 	rightPasswords := 0
 
 	for idx := 0; idx < len(input); idx++ {
-		if PasswordCheck(input[idx]) == true {
+		if SledRentalPasswordCheck(input[idx]) == true {
 			rightPasswords++
 		}
 	}
