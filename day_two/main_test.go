@@ -27,4 +27,15 @@ func TestPasswordPolicy(t *testing.T) {
 		}
 
 	})
+
+	t.Run("Check password policy with 2-6 e's should pass", func(t *testing.T) {
+		input := "2-6 e: eeggeeeuue"
+
+		got := PasswordCheck(input)
+
+		if got == false {
+			t.Error("Policy didn't work")
+		}
+
+	})
 }
