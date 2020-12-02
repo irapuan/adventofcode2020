@@ -64,13 +64,7 @@ func TobogganPasswordCheck(input string) bool {
 	firstCharacterMatches := string(policy.Password[policy.PolicyMinimum-1]) == policy.PolicyLetter
 	secondPositionMarches := string(policy.Password[policy.PolicyMaximum-1]) == policy.PolicyLetter
 
-	if firstCharacterMatches && !secondPositionMarches {
-		return true
-	} else if !firstCharacterMatches && secondPositionMarches {
-		return true
-	}
-
-	return false
+	return firstCharacterMatches != secondPositionMarches
 }
 
 func main() {
