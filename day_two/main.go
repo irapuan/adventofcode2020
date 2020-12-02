@@ -12,6 +12,10 @@ func PasswordCheck(input string) bool {
 
 	policy := rgx.FindStringSubmatch(input)
 
+	if len(policy) != 5 {
+		return false
+	}
+
 	policyMinimum, _ := strconv.Atoi(policy[1])
 	policyMaximum, _ := strconv.Atoi(policy[2])
 	policyLetter := policy[3]
@@ -1030,13 +1034,13 @@ func main() {
 7-9 t: ttzmqqdtqtt
 6-19 g: gggggggggggggggggggg`, "\n")
 
-	wrongPasswords := 0
+	rightPasswords := 0
 
 	for idx := 0; idx < len(input); idx++ {
-		if PasswordCheck(input[idx]) == false {
-			wrongPasswords++
+		if PasswordCheck(input[idx]) == true {
+			rightPasswords++
 		}
 	}
 
-	fmt.Printf("Total number of wrong passwords: %d \n", wrongPasswords)
+	fmt.Printf("Total number of wrong passwords: %d \n", rightPasswords)
 }
